@@ -1,0 +1,109 @@
+# Core Settings
+# ----------------------------------------------------------------------------------------------------------------------
+
+[project]
+name = "guard-tg-parser"
+version = "0.1.0"
+description = "Guard Telegram Parser"
+authors = [{ name = "Ivan Krasnopolsky", email = "i1.krasnopolskiy@gmail.com" }]
+requires-python = "~=3.12"
+readme = "README.md"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "aiohttp>=3.11.18",
+    "rich>=14.0.0",
+    "telethon>=1.40.0",
+]
+package-mode = false
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.11.5,<0.12",
+    "tox>=4.25.0",
+    "types-aiofiles>=24.1.0.20250326",
+]
+
+# Ruff
+# ----------------------------------------------------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "A",      # flake8-builtins: Checks for name shadowing of Python builtins
+    "ANN",    # flake8-annotations: Type annotation related checks
+    "ARG",    # flake8-unused-arguments: Detects unused function arguments
+    "ASYNC",  # flake8-async: Checks for async/await related issues
+    "B",      # flake8-bugbear: Detects common bugs and design problems
+    "C",      # mccabe: Code complexity measurement
+    "C4",     # flake8-comprehensions: Checks for unnecessary comprehensions
+    "COM",    # flake8-commas: Enforces comma placement in lists, dicts, etc.
+    "D",      # pydocstyle: PyDoc linting rules
+    "DJ",     # flake8-django: Django-specific linting rules
+    "DTZ",    # flake8-datetimez: Checks for naive vs aware datetime objects
+    "E",      # pycodestyle errors: Basic Python style conventions (errors)
+    "F",      # Pyflakes: Detects logical errors in programs
+    "G",      # flake8-logging-format: Checks logging format strings
+    "I",      # isort: Import sorting and organization
+    "INT",    # flake8-gettext: Checks for gettext internationalization issues
+    "ISC",    # flake8-implicit-str-concat: String concatenation style checks
+    "LOG",    # flake8-logging: Various logging-related checks
+    "PIE",    # flake8-pie: Miscellaneous linting rules and enhancements
+    "PLE",    # Pylint errors: Critical programming errors
+    "PLR",    # Pylint refactor: Suggestions for code improvements
+    "PLW",    # Pylint warnings: Potential issues or code smells
+    "PT",     # flake8-pytest-style: Best practices for pytest
+    "Q",      # flake8-quotes: Consistency in string quote usage
+    "RET",    # flake8-return: Checks for issues with return statements
+    "RSE",    # flake8-raise: Checks for issues with raised exceptions
+    "RUF",    # Ruff-specific rules: Rules unique to the Ruff linter
+    "SIM",    # flake8-simplify: Checks for code that can be simplified
+    "T20",    # flake8-print: Checks for print statements in production code
+    "TID",    # flake8-tidy-imports: Import tidying and organization
+]
+ignore = [
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed in `**__`
+    "D203",    # incorrect-blank-line-before-class
+    "D213",    # multi-line-summary-second-line
+    "COM812",  # Trailing comma missing
+    "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
+]
+
+# MyPy
+# ----------------------------------------------------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.12"
+
+# Tox
+# ----------------------------------------------------------------------------------------------------------------------
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = ["format", "lint", "typing"]
+skipsdist = true
+
+[tool.tox.env_run_base]
+allowlist_externals = ["*"]
+
+[tool.tox.env.format]
+description = "format code"
+commands = [
+    ["ruff", { replace = "posargs", default = ["format", "."], extend = true} ],
+    ["ruff", { replace = "posargs", default = ["check", "--fixable", "ALL", "--fix"], extend = true} ],
+]
+
+[tool.tox.env.lint]
+description = "lint code"
+commands = [
+    ["ruff", { replace = "posargs", default = ["check", "."], extend = true} ],
+]
+
+[tool.tox.env.typing]
+description = "check typing"
+commands = [
+    ["mypy", { replace = "posargs", default = ["."], extend = true} ]
+]
